@@ -19,19 +19,32 @@ const createEmbeddedContentFor = (contentSrc) => {
   return embeddedContainer.outerHTML;
 };
 
-const messagesInThread = document.querySelectorAll(MESSAGE_CLASS);
+const embedContent = () => {
+  const messagesInThread = document.querySelectorAll(MESSAGE_CLASS);
 
-// Go through all comments in a thread, embedding image/GIF/video links
-messagesInThread.forEach((message) => {
-  const words = message.innerHTML.split(" ");
+  // Go through all comments in a thread, embedding image/GIF/video links
+  messagesInThread.forEach((message) => {
+    const words = message.innerHTML.split(" ");
 
-  words.forEach((word, i) => {
-    const potentialContentSource = word.trim();
-    if (CONTENT_RE.test(potentialContentSource)) {
-      const embeddedContent = createEmbeddedContentFor(potentialContentSource);
-      words[i] = embeddedContent;
-    }
+    words.forEach((word, i) => {
+      // I could see users leaving in query strings after copying the link address
+      const potentialContentSource = word.trim().split("?")[0];
+      if (CONTENT_RE.test(potentialContentSource)) {
+        const embeddedContent = createEmbeddedContentFor(
+          potentialContentSource
+        );
+        words[i] = embeddedContent;
+      }
+    });
+
+    message.innerHTML = words.join(" ");
   });
+};
 
-  message.innerHTML = words.join(" ");
+chrome.runtime.onMessage.addListener((command, sender, sendResponse) => {
+  console.log(`(yes) Running "${command}" command`);
+  // currently only one command
+  embedContent();
 });
+
+embedContent();
