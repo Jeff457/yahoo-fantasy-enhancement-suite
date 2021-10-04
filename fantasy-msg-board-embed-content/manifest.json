@@ -14,10 +14,7 @@
   },
   "content_scripts": [
     {
-      "matches": [
-        "https://football.fantasysports.yahoo.com/*",
-        "https://*.fantasysports.yahoo.com/*"
-      ],
+      "matches": ["*://*.fantasysports.yahoo.com/*"],
       "js": ["content.js"],
       "run_at": "document_end"
     }
@@ -30,9 +27,5 @@
       },
       "description": "Run this extension."
     }
-  },
-  "host_permissions": [
-    "https://football.fantasysports.yahoo.com/*",
-    "https://*.fantasysports.yahoo.com/*"
-  ]
+  }
 }
